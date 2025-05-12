@@ -10,7 +10,7 @@ pipeline {
         stage('Clone') {
             steps {
                 timeout(time: 2, unit: 'MINUTES'){
-                    git branch: 'main', credentialsId: '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', url: 'https://github.com/jhosef1234/TRABAJOS-GIT.git'
+                    git branch: 'main', credentialsId: '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', url: 'https://github.com/jhosef1234/TRABAJOS-GIT.git'
                 }
             }
         }
