@@ -4,24 +4,25 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
+
 import pe.edu.upeu.sysalmacen.modelo.Marca;
 
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 @DataJpaTest
 //@Rollback(false)
-@AutoConfigureTestDatabase(replace =
-        AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 //@ActiveProfiles("test") //Para base de datos real de pruebas
-
 public class IMarcaRepositoryTests {
     @Autowired
     private IMarcaRepository marcaRepository;
     private static Long marcaId;
+
     @BeforeEach
     public void setUp() {
         Marca marca = new Marca();
@@ -38,7 +39,7 @@ public class IMarcaRepositoryTests {
         nuevaMarca.setNombre("LG");
         Marca guardada = marcaRepository.save(nuevaMarca);
         Assertions.assertNotNull(guardada.getIdMarca());
-        Assertions.assertEquals("LG", guardada.getNombre());
+        assertEquals("LG", guardada.getNombre());
     }
 
     @Test
@@ -46,7 +47,7 @@ public class IMarcaRepositoryTests {
     public void testBuscarPorId() {
         Optional<Marca> marca = marcaRepository.findById(marcaId);
         Assertions.assertTrue(marca.isPresent());
-        Assertions.assertEquals("Samsung", marca.get().getNombre());
+        assertEquals("Samsung", marca.get().getNombre());
     }
 
     @Test
@@ -55,28 +56,27 @@ public class IMarcaRepositoryTests {
         Marca marca = marcaRepository.findById(marcaId).orElseThrow();
         marca.setNombre("Samsung Electronics");
         Marca actualizada = marcaRepository.save(marca);
-        Assertions.assertEquals("Samsung Electronics", actualizada.getNombre());
+        assertEquals("Samsung Electronics", actualizada.getNombre());
     }
 
     @Test
     @Order(4)
     public void testListarMarcas() {
         List<Marca> marcas = marcaRepository.findAll();
-        Assertions.assertFalse(marcas.isEmpty());
+        assertFalse(marcas.isEmpty());
         System.out.println("Total marcas registradas: " + marcas.size());
         for (Marca m: marcas){
             System.out.println(m.getNombre()+"\t"+m.getIdMarca());
         }
     }
 
-
-
     @Test
     @Order(5)
     public void testEliminarMarca() {
         marcaRepository.deleteById(marcaId);
         Optional<Marca> eliminada = marcaRepository.findById(marcaId);
-        Assertions.assertFalse(eliminada.isPresent(), "La marca debería haber sido eliminada");
+        assertFalse(eliminada.isPresent(), "La marca debería haber sido eliminada");
     }
+
 
 }

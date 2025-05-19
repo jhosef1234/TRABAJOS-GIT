@@ -1,5 +1,6 @@
 package pe.edu.upeu.sysalmacen.control;
 
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
+
 @ExtendWith(MockitoExtension.class)
 public class MarcaControllerTests {
     @Mock
@@ -30,10 +32,8 @@ public class MarcaControllerTests {
     private MarcaController marcaController;
     private Marca marca;
     private MarcaDTO marcaDTO;
-    private static final Logger logger =
-            Logger.getLogger(MarcaControllerTests.class.getName());
+    private static final Logger logger = Logger.getLogger(MarcaControllerTests.class.getName());
     List<Marca> marcas;
-
 
     @BeforeEach
     void setUp() {
@@ -41,6 +41,7 @@ public class MarcaControllerTests {
                 .idMarca(1L)
                 .nombre("Marca A")
                 .build();
+
         marcaDTO = MarcaDTO.builder()
                 .idMarca(1L)
                 .nombre("Marca A")
@@ -48,25 +49,22 @@ public class MarcaControllerTests {
         marcas=List.of(marca);
     }
 
-
     @Test
-    public void testFindAll_ReturnsListOfMarcaDTO_WithHttpStatusOK() {
+    public void testFindAllOK() {
         //given
         BDDMockito.given(marcaService.findAll()).willReturn(marcas);
 
-        BDDMockito.given(marcaMapper.toDTOs(marcas)).willReturn(List.of(marcaDTO)
-        );
+        BDDMockito.given(marcaMapper.toDTOs(marcas)).willReturn(List.of(marcaDTO));
         //when
         ResponseEntity<List<MarcaDTO>> lp=marcaController.findAll();
-        //then
+
         // Then
         Assertions.assertEquals(HttpStatus.OK, lp.getStatusCode());
         Assertions.assertNotNull(lp.getBody());
         Assertions.assertEquals(1, lp.getBody().size());
         Assertions.assertEquals(List.of(marcaDTO), lp.getBody());
         for (MarcaDTO p : lp.getBody()) {
-            logger.info(String.format("MarcaDTO{id=%d, nombre='%s'}",
-                    p.getIdMarca(), p.getNombre()));
+            logger.info(String.format("MarcaDTO{id=%d, nombre='%s'}", p.getIdMarca(), p.getNombre()));
         }
         BDDMockito.then(marcaService).should().findAll();
         BDDMockito.then(marcaMapper).should().toDTOs(marcas);
@@ -85,7 +83,6 @@ public class MarcaControllerTests {
         BDDMockito.then(marcaMapper).should().toDTO(marca);
     }
 
-
     @Test
     void testSave_ReturnsCreatedStatusAndLocationHeader() {
         BDDMockito.given(marcaMapper.toEntity(marcaDTO)).willReturn(marca);
@@ -97,7 +94,6 @@ public class MarcaControllerTests {
         Assertions.assertTrue(response.getBody().getMessage().equals("true"));
         Assertions.assertTrue(response.getBody().getDetails().contains("1"));
     }
-
 
     @Test
     void testUpdate_ReturnsUpdatedMarcaDTO_WithHttpStatusOK() {
@@ -115,7 +111,6 @@ public class MarcaControllerTests {
         BDDMockito.then(marcaMapper).should().toDTO(marca);
     }
 
-
     @Test
     void testDelete_ReturnsCustomResponse_WithHttpStatusOK() {
         Long id = 1L;
@@ -128,11 +123,6 @@ public class MarcaControllerTests {
         Assertions.assertEquals(customResponse, response.getBody());
         BDDMockito.then(marcaService).should().delete(id);
     }
-
-
-
-
-
 
 
 
